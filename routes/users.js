@@ -53,6 +53,25 @@ const isAdmin = user.isAdmin === true;
   }
 });
 
+// איפוס סיסמה בסיסי - מדומה
+router.post('/reset-password', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ message: 'יש להזין אימייל' });
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'משתמש לא נמצא' });
+
+    // כאן שליחת מייל אמיתית (בעתיד) - כרגע רק מדומה
+    return res.status(200).json({ message: 'קישור לאיפוס סיסמה נשלח לאימייל שלך (מדומה)' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'שגיאת שרת' });
+  }
+});
+
+
 
 module.exports = router;
 
