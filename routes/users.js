@@ -32,27 +32,27 @@ router.post('/register', async (req, res) => {
 
 // Login
 router.post('/login', async (req, res) => {
-  let { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: 'יש למלא את כל השדות' });
-  }
-  email = email.toLowerCase().trim();
+  const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'פרטי התחברות שגויים' });
-    }
+    if (!user) return res.status(401).json({ message: 'משתמש לא נמצא' });
+
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'פרטי התחברות שגויים' });
-    }
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token, userId: user._id });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'שגיאה בשרת' });
+    if (!isMatch) return res.status(401).json({ message: 'סיסמה שגויה' });
+
+    // פה מזהים אם הוא אדמין
+const isAdmin = user.isAdmin === true;
+
+    // הטוקן כולל גם את isAdmin
+    const token = jwt.sign({ userId: user._id, isAdmin }, JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token, userId: user._id, isAdmin }); // ← חשוב! נשלח ללקוח גם את isAdmin
+  } catch (err) {
+    res.status(500).json({ message: 'שגיאת שרת', error: err.message });
   }
 });
 
+
 module.exports = router;
+
