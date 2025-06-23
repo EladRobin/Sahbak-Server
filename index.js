@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 
 const connectDB = require('./config/db');
 const itemRoutes = require('./routes/itemRoutes');
-const authRoutes = require('./routes/authRoutes'); // ← תיקון כאן
+const authRoutes = require('./routes/users'); // ← תיקון כאן
 
 
 dotenv.config();
