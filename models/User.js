@@ -1,14 +1,15 @@
-// Server/models/User.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
   fullName: { type: String, required: true },
+  tz: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String, required: false },
+  class: { type: String, required: false },
   password: { type: String, required: true },
-  isAdmin: { type: Boolean, default: false } // שדה חדש
+  profileImage: { type: String, default: '' },
+  isAdmin: { type: Boolean, default: false }
+  
 });
 
 module.exports = mongoose.model('User', userSchema);
-
-
-
