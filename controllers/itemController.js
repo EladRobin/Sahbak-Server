@@ -51,3 +51,27 @@ exports.deleteItem = async (req, res) => {
     res.status(500).json({ message: 'Error deleting item' });
   }
 };
+exports.getItemsCountByType = async (req, res) => {
+  try {
+    const result = await Item.aggregate([
+      {
+        $group: {
+          _id: "$item", // קיבוץ לפי סוג הפריט
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          type: "$_id",
+          count: 1
+        }
+      }
+    ]);
+
+    res.json(result);
+  } catch (err) {
+    console.error("Aggregation error:", err);
+    res.status(500).json({ message: "שגיאה באחזור פילוח פריטים" });
+  }
+};
