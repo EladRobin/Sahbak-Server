@@ -204,5 +204,29 @@ router.post('/reset-password-with-otp', async (req, res) => {
   }
 });
 
+router.post('/save-signature', async (req, res) => {
+  try {
+    const { userId, signature } = req.body;
+    if (!userId || !signature) return res.status(400).json({ message: 'חסרים פרטים' });
+
+    // צור קובץ חתימה
+    const base64Data = signature.replace(/^data:image\/png;base64,/, '');
+    const filePath = path.join(__dirname, '..', 'uploads', `signature-${userId}.png`);
+    fs.writeFileSync(filePath, base64Data, 'base64');
+
+    // שמור גם במסד הנתונים
+    await User.findByIdAndUpdate(userId, { signatureImage: `/uploads/signature-${userId}.png` });
+
+    res.json({ message: 'חתימה נשמרה בהצלחה' });
+  } catch (err) {
+    console.error('Error saving signature:', err);
+    res.status(500).json({ message: 'שגיאה בשמירת החתימה' });
+  }
+});
+
+
+
+
+
 module.exports = router;
 

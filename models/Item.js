@@ -1,17 +1,13 @@
-// models/Item.js
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
-  name: String,
-  idNumber: String,
-  item: String,
-  sn: String,
-  status: {
-    type: String,
-    enum: ['working', 'defective'], // מצב תקין או לא כשיר
-    default: 'working',
-  },
-  // שדות נוספים לפי הצורך
+  name: { type: String, required: true },
+  idNumber: { type: String, required: true },
+  item: { type: String, required: true },
+  sn: { type: String, required: true },
+  signature: { type: String },
+  signatureDate: { type: Date },
+  status: { type: String, enum: ['active', 'defective'], default: 'active' }
 });
 
 module.exports = mongoose.model('Item', itemSchema);

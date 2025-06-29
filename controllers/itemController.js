@@ -103,3 +103,25 @@ exports.updateItem = async (req, res) => {
     res.status(500).json({ message: 'Error updating item' });
   }
 };
+exports.markItemAsDefective = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Item.findById(id);
+    if (!item) return res.status(404).json({ message: 'Item not found' });
+
+    const now = new Date();
+    const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    if (!item.signatureDate || item.signatureDate < monthAgo) {
+      return res.status(400).json({ message: 'חתימה אינה בתוקף, אנא חתום מחדש.' });
+    }
+
+    item.status = 'defective';
+    await item.save();
+
+    res.json(item);
+  } catch (err) {
+    console.error("Error marking item defective:", err);
+    res.status(500).json({ message: "Error marking item defective" });
+  }
+};
+

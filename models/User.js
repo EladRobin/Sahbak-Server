@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false },
   resetPasswordOTP: { type: String, default: null },
   resetPasswordOTPExpires: { type: Date, default: null }
+
 });
 
 module.exports = mongoose.model('User', userSchema);
